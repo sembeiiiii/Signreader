@@ -1,6 +1,5 @@
 import os
 import random
-import base64
 
 import numpy as np
 from flask import Flask, render_template, redirect, url_for
@@ -130,7 +129,6 @@ def on_start(data):
 
     # Clean up previous recognizer for this connection
     if sid in _recognizers:
-        _recognizers[sid].close()
         del _recognizers[sid]
 
     config = TOPIC_CONFIGS[topic_index]
@@ -152,8 +150,8 @@ def on_start(data):
     emit('recognition_ready', _build_ready_payload(target_action, target_chinese))
 
 
-@socketio.on('frame')
-def on_frame(data):
+@socketio.on('keypoints')
+def on_keypoints(data):
     from flask_socketio import request as ws_request
     sid = ws_request.sid
     if sid not in _recognizers or sid not in _states:
@@ -163,8 +161,8 @@ def on_frame(data):
     state = _states[sid]
 
     try:
-        frame_bytes = base64.b64decode(data['frame'])
-        result = rec.process_frame(frame_bytes, state['target_action'])
+        keypoints = data['keypoints']
+        result = rec.process_keypoints(keypoints, state['target_action'])
         if result is None:
             return
 
@@ -180,7 +178,7 @@ def on_frame(data):
         }
         emit('prediction', payload)
     except Exception as e:
-        print(f'[WS] frame error: {e}')
+        print(f'[WS] keypoints error: {e}')
 
 
 @socketio.on('next_word')
@@ -203,9 +201,7 @@ def on_next_word(_data):
 def on_disconnect():
     from flask_socketio import request as ws_request
     sid = ws_request.sid
-    if sid in _recognizers:
-        _recognizers[sid].close()
-        del _recognizers[sid]
+    _recognizers.pop(sid, None)
     _states.pop(sid, None)
     print(f'[WS] disconnected: {sid}')
 
