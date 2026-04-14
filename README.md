@@ -10,6 +10,14 @@
 
 ---
 
+## 展示影片
+
+[![SignReader 展示影片](https://img.youtube.com/vi/0Yc1tD9It3o/0.jpg)](https://www.youtube.com/watch?v=0Yc1tD9It3o)
+
+> 點擊上方圖片觀看完整展示影片
+
+---
+
 ## Demo Site
 
 > **線上體驗**：[https://signreader.onrender.com](https://signreader.onrender.com)
@@ -199,6 +207,21 @@ SignReader/
 │   └── bootstrap.min.*     # Bootstrap 框架
 └── gensen-font-master/     # 中文字型（源泉圓體）
 ```
+
+---
+
+## 團隊成員
+
+| 學號 | 姓名 | 角色 |
+|------|------|------|
+| U1033021 | 王宥翔 | 專題組長 |
+| U0933004 | 周鈺庭 | 專題組員 |
+| U1033015 | 林仙安 | 專題組員 |
+| U1033028 | 謝獻堂 | 專題組員 |
+| U1033030 | 周忠彥 | 專題組員 |
+| U1033055 | 陳如筠 | 專題組員 |
+
+**指導教授**：黃品叡
 
 ---
 
