@@ -233,6 +233,30 @@ SignReader/
 | **第 29 屆大專校院資訊應用服務創新競賽（InnoServe）** | 資訊應用組（IP4） **第二名** | 2024.11 |
 | **第 28 屆國際資訊管理暨實務研討會（IMP 2023）** | 論文發表 | 2023.12 |
 
+### InnoServe 教育 AI 組 — 第一名
+
+<p align="center">
+  <img src="static/imgs/innoserve_ai_1st.jpg.jpg" alt="教育AI組第一名合照" width="600">
+</p>
+<p align="center">
+  <img src="static/imgs/AI組第一名.jpg" alt="教育AI組第一名獎狀" width="500">
+</p>
+
+### InnoServe 資訊應用組（IP4） — 第二名
+
+<p align="center">
+  <img src="static/imgs/innoserve_ip_2nd.jpg.jpg" alt="資訊應用組第二名合照" width="600">
+</p>
+<p align="center">
+  <img src="static/imgs/IP組 第二名.jpg" alt="資訊應用組第二名獎狀" width="500">
+</p>
+
+### IMP 2023 — 論文發表
+
+<p align="center">
+  <img src="static/imgs/IMP 2023.jpg" alt="IMP 2023 論文發表證明" width="500">
+</p>
+
 ---
 
 ## 授權
