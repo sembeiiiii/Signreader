@@ -188,7 +188,7 @@ python app.py
 
 ```
 SignReader/
-├── app.py                  # Flask + Socket.IO 主應用程式
+├── app.py                  # Flask + Socket.IO 主應用程式（含 TOPIC_CONFIGS 參數化配置）
 ├── utils.py                # 手語辨識核心邏輯（關鍵點處理 + LSTM 推論）
 ├── requirements.txt        # Python 套件依賴
 ├── Dockerfile              # Docker 容器化部署設定
@@ -198,14 +198,14 @@ SignReader/
 │   ├── card.html           # 主題卡片
 │   ├── cardTest.html       # 辨識測驗選擇頁
 │   └── recognize.html      # 即時辨識頁面（MediaPipe + Canvas）
-├── static/
-│   ├── recognize.js        # 瀏覽器端 MediaPipe 辨識邏輯
-│   ├── imgs/               # 圖片資源（手語參考圖）
-│   ├── videos/             # 手語教學影片（224 個）
-│   ├── model/latest/       # LSTM 預訓練模型（.h5）
-│   ├── *.js                # 前端 JavaScript（book.js, card.js 等）
-│   └── bootstrap.min.*     # Bootstrap 框架
-└── gensen-font-master/     # 中文字型（源泉圓體）
+└── static/
+    ├── recognize.js        # 瀏覽器端 MediaPipe 辨識邏輯
+    ├── imgs/               # 圖片資源（手語參考圖）
+    ├── videos/             # 手語教學影片（224 個）
+    ├── model/latest/       # LSTM 預訓練模型（.h5）
+    ├── *.js                # 前端 JavaScript（book.js, card.js 等）
+    ├── bootstrap.min.css   # Bootstrap 5.3.3
+    └── vue.global.prod.js  # Vue 3.4.19
 ```
 
 ---

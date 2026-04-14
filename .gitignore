@@ -27,8 +27,10 @@ Thumbs.db
 
 # Large training videos (kept for electronic vocabulary book)
 
-# Font source archive
-gensen-font-master/gensen-font-master.zip
+# Third-party distributions (use static/ copies or CDN instead)
+bootstrap-5.3.3-dist/
+cdnjs/
+gensen-font-master/
 
 # Backup files
 static/backup/
