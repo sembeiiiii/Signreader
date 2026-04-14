@@ -2,8 +2,10 @@ import os
 import random
 
 import numpy as np
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_socketio import SocketIO, emit
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'signreader_secret_2024')
@@ -15,49 +17,49 @@ TOPIC_CONFIGS = [
         'name': '問候語',
         'actions': ['Fighting', 'Yes', 'No'],
         'actions_chinese': ['加油', '是', '不是'],
-        'model': './static/model/latest/Fighting, Yes, No.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Fighting, Yes, No.h5'),
     },
     {
         'name': '住宿',
         'actions': ['WIFI', 'NoHave', 'lodging'],
         'actions_chinese': ['網際網路', '沒有', '住宿'],
-        'model': './static/model/latest/lodging, NoHave,WIFI.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/lodging, NoHave,WIFI.h5'),
     },
     {
         'name': '用餐',
         'actions': ['Noodles', 'Pig', 'Rice'],
         'actions_chinese': ['麵', '豬', '飯'],
-        'model': './static/model/latest/Noodles,Pig,Rice.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Noodles,Pig,Rice.h5'),
     },
     {
         'name': '居家',
         'actions': ['Light', 'Dish', 'Phone'],
         'actions_chinese': ['燈', '盤子', '電話'],
-        'model': './static/model/latest/Light, Dish, Phone.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Light, Dish, Phone.h5'),
     },
     {
         'name': '交通',
         'actions': ['right', 'Drive', 'Night'],
         'actions_chinese': ['右轉', '開車', '晚上'],
-        'model': './static/model/latest/right, Drive, Night.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/right, Drive, Night.h5'),
     },
     {
         'name': '醫療',
         'actions': ['Medicine', 'Also', 'Check'],
         'actions_chinese': ['藥', '還有', '檢查'],
-        'model': './static/model/latest/Medicine, Also, Check.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Medicine, Also, Check.h5'),
     },
     {
         'name': '緊急',
         'actions': ['Contact', 'Now', 'Data'],
         'actions_chinese': ['聯絡', '現在', '資料'],
-        'model': './static/model/latest/Contact, Now, Data.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Contact, Now, Data.h5'),
     },
     {
         'name': '購物',
         'actions': ['Money', 'Where', 'CreditCard'],
         'actions_chinese': ['錢', '哪裡', '信用卡'],
-        'model': './static/model/latest/Money, Where, CreditCard.h5',
+        'model': os.path.join(BASE_DIR, 'static/model/latest/Money, Where, CreditCard.h5'),
     },
 ]
 
@@ -118,13 +120,12 @@ def recognize(index):
 # ── Socket.IO events ──────────────────────────────────────────────────────────
 @socketio.on('connect')
 def on_connect():
-    print(f'[WS] connected: {_sid()}')
+    print(f'[WS] connected: {request.sid}')
 
 
 @socketio.on('start_recognition')
 def on_start(data):
-    from flask_socketio import request as ws_request
-    sid = ws_request.sid
+    sid = request.sid
     topic_index = int(data.get('topic_index', 0))
 
     # Clean up previous recognizer for this connection
@@ -152,8 +153,7 @@ def on_start(data):
 
 @socketio.on('keypoints')
 def on_keypoints(data):
-    from flask_socketio import request as ws_request
-    sid = ws_request.sid
+    sid = request.sid
     if sid not in _recognizers or sid not in _states:
         return
 
@@ -183,8 +183,7 @@ def on_keypoints(data):
 
 @socketio.on('next_word')
 def on_next_word(_data):
-    from flask_socketio import request as ws_request
-    sid = ws_request.sid
+    sid = request.sid
     if sid not in _recognizers or sid not in _states:
         return
 
@@ -199,19 +198,13 @@ def on_next_word(_data):
 
 @socketio.on('disconnect')
 def on_disconnect():
-    from flask_socketio import request as ws_request
-    sid = ws_request.sid
+    sid = request.sid
     _recognizers.pop(sid, None)
     _states.pop(sid, None)
     print(f'[WS] disconnected: {sid}')
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-def _sid():
-    from flask_socketio import request as ws_request
-    return ws_request.sid
-
-
 def _build_ready_payload(target_action, target_chinese):
     return {
         'target_action': target_action,
