@@ -166,8 +166,14 @@ def on_keypoints(data):
         if result is None:
             return
 
+        # Map predicted English action to Chinese
+        config = TOPIC_CONFIGS[state['topic_index']]
+        pred_idx = list(config['actions']).index(result['predicted']) if result['predicted'] in config['actions'] else -1
+        predicted_chinese = config['actions_chinese'][pred_idx] if pred_idx >= 0 else result['predicted']
+
         payload = {
             'predicted': result['predicted'],
+            'predicted_chinese': predicted_chinese,
             'confidence': result['confidence'],
             'frame_count': result['frame_count'],
             'success': result['success'],
@@ -175,6 +181,7 @@ def on_keypoints(data):
             'target_chinese': state['target_chinese'],
             'target_image': f"/static/imgs/videosCover/{state['target_chinese']}.png",
             'show_video': f"/static/videos/showVideos/{state['target_chinese']}.mp4",
+            'probs': result['probs'],
         }
         emit('prediction', payload)
     except Exception as e:
@@ -210,6 +217,7 @@ def _build_ready_payload(target_action, target_chinese):
         'target_action': target_action,
         'target_chinese': target_chinese,
         'target_image': f'/static/imgs/videosCover/{target_chinese}.png',
+        'show_video': f'/static/videos/showVideos/{target_chinese}.mp4',
     }
 
 
