@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: signreader
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PORT
+        value: 5500
+    healthCheckPath: /

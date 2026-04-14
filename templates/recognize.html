@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignReader | 手語辨識</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css" />
+  <style>
+    body {
+      background-image: url('/static/imgs/test_bc.png');
+      background-size: cover;
+      background-attachment: fixed;
+      font-family: "Noto Sans TC", sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .recognize-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ── Camera card ── */
+    .camera-card {
+      background: rgba(255,255,255,0.88);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    #webcam {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 8px;
+      transform: scaleX(-1); /* mirror */
+      background: #000;
+    }
+
+    /* ── Target word ── */
+    .target-box {
+      background: linear-gradient(135deg, #424d5d, #5a7a9a);
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .target-label { font-size: 0.85rem; opacity: 0.8; letter-spacing: 2px; }
+    .target-word  { font-size: 2.8rem; font-weight: 700; line-height: 1.1; }
+    .target-en    { font-size: 1rem;  opacity: 0.75; margin-top: 4px; }
+
+    /* ── Progress bar ── */
+    .progress-label { font-size: 0.8rem; color: #666; margin-bottom: 4px; }
+    .progress { height: 14px; border-radius: 8px; background: #dde6f0; }
+    .progress-bar {
+      background: linear-gradient(90deg, #86a1ab, #424d5d);
+      border-radius: 8px;
+      transition: width 0.2s;
+    }
+
+    /* ── Status pill ── */
+    .status-pill {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-ready    { background: #e3f0ff; color: #2c6fbf; }
+    .status-loading  { background: #fff3cd; color: #856404; }
+    .status-detected { background: #d1f5d3; color: #1a7a2e; }
+    .status-wrong    { background: #fde8e8; color: #b91c1c; }
+
+    /* ── Confidence bars ── */
+    .prob-bar-wrap { font-size: 0.8rem; color: #555; margin-bottom: 6px; }
+    .prob-bar-bg   { background: #eef2f7; border-radius: 4px; height: 10px; overflow: hidden; }
+    .prob-bar-fill { height: 100%; border-radius: 4px; background: #86a1ab; transition: width 0.2s; }
+    .prob-bar-fill.active { background: #424d5d; }
+
+    /* ── Success overlay ── */
+    #success-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #success-overlay.show { display: flex; }
+
+    .success-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      animation: popIn .35s cubic-bezier(.175,.885,.32,1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(.7); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+
+    .success-icon { font-size: 4rem; }
+    .success-word { font-size: 3rem; font-weight: 700; color: #424d5d; }
+    .success-img  { max-height: 180px; border-radius: 12px; margin: 12px 0; object-fit: cover; }
+
+    .btn-next {
+      background: linear-gradient(135deg, #424d5d, #5a7a9a);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-next:hover { opacity: 0.88; }
+
+    /* ── Navbar strip ── */
+    .top-bar {
+      background: rgba(217,226,243,0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .top-bar img { width: 32px; height: 32px; }
+    .top-bar h1  { font-size: 1.3rem; margin: 0; color: #424d5d; }
+    .back-btn {
+      margin-left: auto;
+      background: #424d5d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .back-btn:hover { background: #5a7a9a; }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="recognize-wrapper">
+  <div class="top-bar">
+    <img src="/static/imgs/logo-no-background.png" alt="logo" />
+    <h1>SignReader</h1>
+    <span class="text-muted" style="font-size:0.9rem;">{{ topic_name }} — 手語辨識</span>
+    <button class="back-btn" onclick="location.href='/cardTest.html'">← 返回</button>
+  </div>
+
+  <div class="row g-3">
+    <!-- Left: camera -->
+    <div class="col-lg-7">
+      <div class="camera-card p-3">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <span id="status-pill" class="status-pill status-loading">載入模型中…</span>
+          <span id="pred-text" class="text-muted" style="font-size:0.85rem;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: info panel -->
+    <div class="col-lg-5 d-flex flex-column gap-3">
+
+      <!-- Target word -->
+      <div class="target-box">
+        <div class="target-label">請比出這個手語</div>
+        <div class="target-word" id="target-zh">—</div>
+        <div class="target-en"  id="target-en"></div>
+      </div>
+
+      <!-- Progress -->
+      <div class="camera-card p-3">
+        <div class="progress-label">辨識進度（連續 7 幀）</div>
+        <div class="progress">
+          <div class="progress-bar" id="prog-bar" style="width:0%;"></div>
+        </div>
+        <div class="text-end mt-1" style="font-size:0.8rem; color:#666;">
+          <span id="prog-count">0</span> / 7
+        </div>
+      </div>
+
+      <!-- Confidence -->
+      <div class="camera-card p-3">
+        <div style="font-size:0.85rem; color:#555; margin-bottom:8px; font-weight:600;">各詞信心度</div>
+        <div id="prob-bars"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div id="success-overlay">
+  <div class="success-card">
+    <div class="success-icon">🎉</div>
+    <div class="success-word" id="s-word"></div>
+    <img id="s-img" class="success-img" src="" alt="" onerror="this.style.display='none'" />
+    <div style="color:#555; font-size:0.9rem; margin-bottom:16px;">辨識成功！</div>
+    <button class="btn-next" onclick="nextWord()">下一個單字</button>
+    <br/>
+    <button class="btn-next" style="background:#86a1ab; margin-top:8px;" onclick="location.href='/cardTest.html'">結束測驗</button>
+  </div>
+</div>
+
+<!-- Socket.IO CDN -->
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const TOPIC_INDEX = {{ topic_index }};
+</script>
+<script src="/static/recognize.js"></script>
+</body>
+</html>

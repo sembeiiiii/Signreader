@@ -1,27 +1,23 @@
-# 使用官方的 Python 映像作為基礎映像
-FROM python:3.9-alpine
+FROM python:3.11-slim
 
-# 設置工作目錄
 WORKDIR /app
-# ADD . /app
 
-# 複製 requirements.txt 到工作目錄
-COPY requirements.txt .
-
-# 安裝系統依賴
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+# System deps for OpenCV headless + MediaPipe
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# 安裝 requirements.txt 中列出的套件
-RUN pip install -r requirements.txt
+# Install Python deps first (cache layer)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-
-# 複製必要的文件和資料夾
+# Copy project files
 COPY . .
 
 EXPOSE 5500
 
-# 指定容器啟動時執行的命令
 CMD ["python", "app.py"]

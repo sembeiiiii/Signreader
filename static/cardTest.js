@@ -30,11 +30,7 @@ Vue.createApp({
       return "/rec" + index;
     },
     submitForm(index) {
-      let form = document.createElement("form");
-      form.method = "post";
-      form.action = "/rec" + index;
-      document.body.appendChild(form);
-      form.submit();
+      window.location.href = "/recognize/" + index;
     },
     // submitForm(index) {
     //   // 可以在这里做一些点击按钮后的逻辑处理
