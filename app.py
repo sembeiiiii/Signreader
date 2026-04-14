@@ -33,7 +33,7 @@ TOPIC_CONFIGS = [
     {
         'name': '居家',
         'actions': ['Light', 'Dish', 'Phone'],
-        'actions_chinese': ['燈', '盤子', '手機'],
+        'actions_chinese': ['燈', '盤子', '電話'],
         'model': './static/model/latest/Light, Dish, Phone.h5',
     },
     {
