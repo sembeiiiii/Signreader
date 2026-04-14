@@ -23,6 +23,8 @@ const sImg       = document.getElementById('s-img');
 
 let streaming = false;
 let currentShowVideo = '';  // path to demo video for current target
+let lastSendTime = 0;
+const SEND_INTERVAL = 150;  // ms between keypoint sends (~6-7 FPS to server)
 
 // ── 1. MediaPipe Holistic setup ──────────────────────────────────────────────
 const holistic = new Holistic({
@@ -168,6 +170,11 @@ function onResults(results) {
   ctx.restore();
 
   if (streaming) {
+    // Throttle: only send keypoints at ~6-7 FPS to reduce server load
+    const now = Date.now();
+    if (now - lastSendTime < SEND_INTERVAL) return;
+    lastSendTime = now;
+
     const keypoints = extractKeypoints(results);
     socket.emit('keypoints', { keypoints: keypoints });
   }

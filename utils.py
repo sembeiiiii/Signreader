@@ -25,12 +25,20 @@ class SignRecognizer:
         model.load_weights(model_path)
         self.model = model
 
+    CONFIDENCE_THRESHOLD = 0.6
+
     def process_keypoints(self, keypoints, target_action):
         """
         Accept a flat list of 1662 keypoint values (extracted by MediaPipe JS in browser).
         Returns a dict with prediction info, or None if not enough frames yet.
         """
         kp = np.array(keypoints, dtype=np.float32)
+
+        # Validate keypoint count
+        if len(kp) != 1662:
+            print(f'[WS] bad keypoint count: {len(kp)}, expected 1662')
+            return None
+
         self.sequence.append(kp)
         self.sequence = self.sequence[-30:]
 
@@ -41,7 +49,12 @@ class SignRecognizer:
         predicted = self.actions[np.argmax(res)]
         confidence = float(np.max(res))
 
-        if predicted == target_action:
+        # Debug: log first prediction to check distribution
+        if self.frame_count == 0 and len(self.sequence) == 30:
+            print(f'[LSTM] prediction: {dict(zip(self.actions.tolist(), [f"{p:.3f}" for p in res]))}')
+
+        # Only count as match if confidence exceeds threshold
+        if predicted == target_action and confidence >= self.CONFIDENCE_THRESHOLD:
             self.frame_count += 1
         else:
             self.frame_count = 0
