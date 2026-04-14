@@ -225,5 +225,5 @@ def _build_ready_payload(target_action, target_chinese):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5500))
+    port = int(os.environ.get('PORT', 5501))
     socketio.run(app, host='0.0.0.0', port=port, debug=False)

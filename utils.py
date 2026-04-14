@@ -21,8 +21,8 @@ class SignRecognizer:
         self._build_model(model_path)
 
     def _build_model(self, model_path):
-        from keras.models import Sequential
-        from keras.layers import LSTM, Dense
+        from tensorflow.keras.models import Sequential
+        from tensorflow.keras.layers import LSTM, Dense
 
         model = Sequential()
         model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30, 1662)))
