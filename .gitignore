@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Node
+node_modules/
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large training videos (not needed for deployment)
+static/videos/allVideos/
+
+# Font source archive
+gensen-font-master/gensen-font-master.zip
+
+# Backup files
+static/backup/
+.git_backup/

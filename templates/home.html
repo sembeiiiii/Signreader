@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SignReader|登入</title>
+    <link rel="stylesheet" href="../static/bootstrap.min.css" />
+    <script src="../static/vue.global.prod.js"></script>
+    <!-- <script src="../static/popper.min.js"></script> -->
+    <script src="../static/bootstrap.min.js"></script>
+    <style>
+      body {
+        margin: 10px;
+        background-color: white;
+        /* font-family: "GenSenRounded"; */
+        font-family: "Noto Sans TC", sans-serif;
+        font-optical-sizing: auto;
+        /* font-weight: 200; */
+        font-style: normal;
+      }
+      .left {
+        .input {
+          background-color: #d9e2f3;
+        }
+        .submit {
+          background-color: #424d5d;
+          color: #ffffff;
+        }
+      }
+      ::placeholder {
+        /* 提示文字設定成白色 */
+        color: #424d5d;
+      }
+      .text_right {
+        /* 忘記密碼, 沒有帳號, 創立新帳號靠右 */
+        width: 75%;
+        text-align: right;
+      }
+      a {
+        text-decoration: none;
+      }
+      .title {
+        color: #424d5d;
+      }
+      .stitle {
+        color: #424d5d;
+      }
+    </style>
+  </head>
+  {% raw %}
+  <body>
+    <nav class="d-flex align-items-center p-5">
+      <img
+        class="d-inline mb-1"
+        src="../static/imgs/logo-no-background.png"
+        alt="logo"
+        style="width: 40px; height: 40px"
+      />
+      <h1 class="d-inline ms-2 title">
+        <a href="page.html" style="color: black">SignReader</a>
+      </h1>
+      <select
+        name="language"
+        id="language-select"
+        class="ms-auto border border-1 rounded-1 p-2 pe-5"
+      >
+        <option value="Chinese-trandition">繁體中文</option>
+        <option value="English">英文</option>
+      </select>
+    </nav>
+
+    <section>
+      <div class="container-fluid p-3">
+        <div class="row">
+          <!-- left(login) -->
+          <div class="col-6 mx-auto left text-center p-3 h-100">
+            <div>
+              <p class="fs-1 m-0 title">登入</p>
+              <p class="fs-4 m-1 title">歡迎回來！</p>
+            </div>
+            <div>
+              <input
+                class="input m-1 w-50 p-2 border border-1 rounded-1"
+                type="text"
+                placeholder="帳號"
+              /><br />
+              <input
+                class="input m-1 w-50 p-2 border border-1 rounded-1"
+                type="password"
+                placeholder="密碼"
+              />
+              <a href="#" class="text_right m-0 d-block stitle">忘記密碼？</a>
+              <input
+                class="submit fs-5 w-50 p-2 border border-1 rounded-1"
+                style="text-align: center"
+                type="button"
+                value="登入"
+              />
+              <p class="text_right m-0 d-block title">沒有帳號？</p>
+
+              <a href="#" class="text_right m-0 d-block stitle"
+                ><b>創立新帳號</b></a
+              >
+            </div>
+          </div>
+          <!-- right -->
+          <div class="col-6 text-center my-auto title">
+            <h1 class="">產品介紹</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+  {% endraw %}
+  <!-- <script src="popper.min.js"></script> -->
+  <script src="../static/home.js"></script>
+</html>
+
+<!-- 
+  border border-1 無邊框線條 
+  rounded-1 圓角
+ -->

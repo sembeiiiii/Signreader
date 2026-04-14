@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>電「指」書</title>
+    <script src="../static/nav.js"></script>
+  </head>
+  <style scoped>
+    /* Add your button style classes here */
+    .btn-S {
+      background-color: #f7ecd1; /* Example color */
+    }
+    .btn-V {
+      background-color: #d9e2f3; /* Example color */
+    }
+    .btn-N {
+      background-color: #def1d2; /* Example color */
+    }
+    .btn-A {
+      background-color: #fbe4d5; /* Example color */
+    }
+    .btn-F {
+      background-color: #eae1f3; /* Example color */
+    }
+  </style>
+  <style>
+    /* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap"); */
+
+    /* @font-face {
+      font-family: "GenSenRounded";
+      src: url("/gensen-font-master/ttc/GenSenRounded-R.ttc");
+    } */
+     
+    body {
+      margin: 10px;
+      /* background-color: white; */
+      background-image: url('../static/imgs/test_bc.png');
+      background-attachment: fixed;
+      background-size: contain;
+      /* font-family: "GenSenRounded"; */
+      font-family: "Noto Sans TC", sans-serif;
+      font-optical-sizing: auto;
+      /* font-weight: 200; */
+      font-style: normal;
+    }
+    /* 文字框 */
+    /* #textFrame {
+      background-color: #b3dff0;
+      width: 100%;
+      height: 100px;
+    } */
+    .word {
+      /* 顯示在frame上的字塊 */
+      background-color: #c0e2e6;
+      /* border: 0px solid #f0ede4; */
+      border-radius: 5px;
+      display: inline-block;
+      text-align: center;
+      margin: 5px;
+      padding: 5px;
+      /* width: 30px; */
+      cursor: pointer;
+    }
+    .addBtn {
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    #submitBtn,
+    #resetBtn {
+      background-color: #424d5d;
+      color: white;
+      display: inline-block;
+      text-align: center;
+      margin: 5px;
+      padding: 12px;
+      border-style: none;
+      border-radius: 0.25rem;
+    }
+    .rightBar {
+      background-color: #424d5d;
+      color: white;
+      position: sticky;
+    }
+    .offcanvas {
+      transition: transform 0.3s ease;
+      transform: translateX(-100%);
+    }
+    .navpage {
+      /* position: fixed; 固定在页面顶部 */
+      top: 0; /* 距离顶部为0 */
+      width: 100%; /* 宽度100% */
+      background-color: #d9e2f3; /* 背景颜色 */
+      z-index: 999; /* 设置层级，确保在最上层 */
+    }
+
+    /* 上面的bar顏色 */
+    .container-fluid {
+      background-color: #d9e2f3;
+      border-radius: 5px;
+    }
+  </style>
+  <body>
+    <!-- nav -->
+    {% raw %}
+    <!-- addBtn -->
+    <div class="container" id="selectBtnFrame">
+      <div class="row m-0 p-0" style="width: 100%">
+        <!-- <div class="col-1"></div> -->
+        <!-- 中間的區域 -->
+        <div class="col-9 m-0 ps-5">
+          <div class="col">
+            <div class="row-2 text-start me-0 fs-2">基本溝通</div>
+            <div
+              class="row-4 position-relative rounded btnFrame"
+              style="background-color: #86a1ab; height: 150px"
+            >
+              <!-- addBtn Frame -->
+              <div
+                class="word rounded"
+                v-for="(word, index) in message"
+                :key="index"
+                @click="removeWord(index)"
+              >
+                {{ word }}
+              </div>
+              <div class="position-absolute bottom-0 end-0">
+                <!-- 輸出按鈕 -->
+                <button id="resetBtn" @click="removeAllWord">清除</button>
+                <!-- <button id="submitBtn" @click="playVideos">轉換成影片</button> -->
+                <button id="submitBtn" @click="convertToVideos">
+                  轉換成影片
+                </button>
+              </div>
+            </div>
+            <!-- 影片播放區 -->
+            <div
+              v-if="showVideo"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <video
+                :src="currentVideo()"
+                controls
+                autoplay
+                width="70%"
+                height="440"
+                @ended="playNextVideo"
+              ></video>
+            </div>
+            <!-- select Btn Frame -->
+            <div class="row-6 mt-3 my-0">
+              <div class="container">
+                <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+                  <!-- 這邊要做的事是按下面的btn 上面的frame會推按的那個字進來 -->
+                  <div
+                    v-for="(btnArray, type) in currentContent"
+                    :key="type"
+                    class=" "
+                  >
+                    <div
+                      v-for="(btn, index) in btnArray"
+                      :key="index"
+                      class="col addBtn p-2 fs-5 border text-center rounded"
+                      :class="getButtonClass(type)"
+                      @click="displayMessage(btn)"
+                    >
+                      <div>{{ btn }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- right bar -->
+        <!-- <div class="col-1"></div> -->
+        <div class="col-2 ml-3">
+          <div class="list-group sticky-top">
+            <a
+              href="#"
+              class="list-group-item list-group-item-action rightBar"
+              v-for="(text, index) in rightBarTextArray"
+              :key="index"
+              @click="handleItemClick(index)"
+              :class="{ active: activeIndex === index }"
+              >{{ text }}</a
+            >
+          </div>
+          <!-- <section>
+            <ul class="list-group list-group-flush">
+              <li
+                class="list-group-item rightBar p-3 fs-5"
+                v-for="(text, index) in rightBarTextArray"
+                :key="index"
+              >
+                {{ text }}
+              </li>
+            </ul>
+          </section> -->
+        </div>
+      </div>
+    </div>
+    {% endraw %}
+  </body>
+  <!-- script -->
+  <script src="../static/book.js"></script>
+  <script
+    src="https://kit.fontawesome.com/cce1f1f721.js"
+    crossorigin="anonymous"
+  ></script>
+</html>

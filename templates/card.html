@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SignReader|情境練習</title>
+    <script src="../static/nav.js"></script>
+  </head>
+  <style>
+    body {
+      margin: 10px;
+      /* background-color: white; */
+      background-image: url('../static/imgs/test_bc.png');
+      background-attachment: fixed;
+      background-size: contain;
+      /* font-family: "GenSenRounded"; */
+      font-family: "Noto Sans TC", sans-serif;
+      font-optical-sizing: auto;
+      /* font-weight: 200; */
+      font-style: normal;
+    }
+    .rightBar {
+      background-color: #424d5d;
+      color: white;
+      position: sticky;
+    }
+    .container-fluid {
+      background-color: #ffffff;
+    }
+    .nav-text {
+      color: #000000;
+    }
+    
+    .cardVideo {
+      /* padding: -10%; */
+      height: 200px;
+      /* background-color:#272520; */
+      border-radius: 5px;
+      background-color: transparent;
+      margin: 10px;
+      width: 100%;
+    }
+
+    /* 上面的bar顏色 */
+    .container-fluid {
+      background-color: #d9e2f3;
+      border-radius: 5px;
+    }
+    .ssBtnDefault{
+      display: none;
+    }
+  </style>
+
+  <style scoped>
+    .active {
+      /* // Define styles for the active item if needed */
+      background-color: #e9ecef;
+      /* // Example background color */
+    }
+  </style>
+  <body>
+    <!-- nav -->
+    {% raw %}
+    <div class="container mx-auto" id="card">
+      <div class="row">
+        <!-- card -->
+
+        <div class="col">
+          <div
+            class="row row-cols-3 "
+          >
+            <!-- <div v-if="activeIndex !== null"> -->
+            <div v-for="(title, index) in currentContent" :key="index">
+              <div class="cardVideoContainer">
+                <div class="pb-0">
+                  <!-- <p class="card-text text-center fs-3">{{title}}</p> -->
+                </div>
+
+                <video
+                  class="cardVideo"
+                  controls
+                  :poster="getPosterPath(title)"
+                  :src="getVideoPath(title)"
+                ></video>
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
+        </div>
+        <!-- card -->
+
+        <!-- <div class="col">Column</div> -->
+        <div class="col-2 mx-0">
+          <div class="list-group sticky-top">
+            <a
+              href="#"
+              class="list-group-item list-group-item-action rightBar"
+              v-for="(text, index) in rightBarTextArray"
+              :key="index"
+              @click="handleItemClick(index)"
+              :class="{ active: activeIndex === index }"
+              >{{ text }}</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endraw %}
+    <script
+      src="https://kit.fontawesome.com/cce1f1f721.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../static/card.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  </body>
+</html>
